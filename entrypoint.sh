@@ -35,7 +35,7 @@ X11VNC_PID=$!
 websockify --web /usr/share/novnc/ 0.0.0.0:"$NOVNC_PORT" 127.0.0.1:"$VNC_PORT" &
 WEBSOCKIFY_PID=$!
 
-chromium --display=$DISPLAY --no-sandbox --no-default-browser-check --no-first-run --kiosk --user-data-dir=/opt/taoli-tools "https://taoli.tools" &
+chromium --display=$DISPLAY --no-sandbox --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --kiosk --disable-web-security --user-data-dir=/opt/taoli-tools "https://taoli.tools" &
 CHROMIUM_PID=$!
 
 wait "$WEBSOCKIFY_PID"
