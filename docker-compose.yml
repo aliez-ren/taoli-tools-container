@@ -1,21 +1,47 @@
 services:
-  hbbs:
-    container_name: hbbs
-    image: rustdesk/rustdesk-server:latest
-    command: hbbs
-    volumes:
-      - ./data:/root
-    network_mode: "host"
-
+  gui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      RUSTDESK_ID_SERVER: hbbs
+      RUSTDESK_RELAY_SERVER: hbbr:21117
+      RUSTDESK_API_SERVER: http://hbbs:21114
     depends_on:
+      - hbbs
       - hbbr
+    ports:
+      - "21112:21112"
+    shm_size: 2g
+    volumes:
+      - gui-home:/home/app
+
+  hbbs:
+    image: rustdesk/rustdesk-server:latest
+    command: [ "/bin/sh", "-c", "hbbs -r ${RUSTDESK_DEFAULT_RELAY:-hbbr:21117}${RUSTDESK_KEY:+ -k ${RUSTDESK_KEY}}" ]
+    environment:
+      RUSTDESK_KEY: "${RUSTDESK_KEY:-}"
+      RUSTDESK_DEFAULT_RELAY: "${RUSTDESK_DEFAULT_RELAY:-}"
+    ports:
+      - "21114:21114"
+      - "21115:21115"
+      - "21116:21116"
     restart: unless-stopped
+    volumes:
+      - server-data:/root
 
   hbbr:
-    container_name: hbbr
     image: rustdesk/rustdesk-server:latest
-    command: hbbr
-    volumes:
-      - ./data:/root
-    network_mode: "host"
+    command: [ "/bin/sh", "-c", "hbbr${RUSTDESK_KEY:+ -k ${RUSTDESK_KEY}}" ]
+    environment:
+      RUSTDESK_KEY: "${RUSTDESK_KEY:-}"
+    ports:
+      - "21117:21117"
+      - "21118:21118"
     restart: unless-stopped
+    volumes:
+      - server-data:/root
+
+volumes:
+  gui-home:
+  server-data:
