@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "CORS Relaxer",
+  "version": "0.0.1",
+  "description": "Loosen CORS for development by reflecting Origin/headers.",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  }
+}
