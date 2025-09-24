@@ -18,10 +18,9 @@ services:
 
   hbbs:
     image: rustdesk/rustdesk-server:latest
-    command: [ "/bin/sh", "-c", "hbbs -r ${RUSTDESK_DEFAULT_RELAY:-hbbr:21117}${RUSTDESK_KEY:+ -k ${RUSTDESK_KEY}}" ]
+    command: hbbs
     environment:
-      RUSTDESK_KEY: "${RUSTDESK_KEY:-}"
-      RUSTDESK_DEFAULT_RELAY: "${RUSTDESK_DEFAULT_RELAY:-}"
+      RUSTDESK_KEY: test
     ports:
       - "21114:21114"
       - "21115:21115"
@@ -32,9 +31,9 @@ services:
 
   hbbr:
     image: rustdesk/rustdesk-server:latest
-    command: [ "/bin/sh", "-c", "hbbr${RUSTDESK_KEY:+ -k ${RUSTDESK_KEY}}" ]
+    command: hbbr
     environment:
-      RUSTDESK_KEY: "${RUSTDESK_KEY:-}"
+      RUSTDESK_KEY: test
     ports:
       - "21117:21117"
       - "21118:21118"
