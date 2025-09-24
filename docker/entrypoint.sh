@@ -48,7 +48,7 @@ runuser -u app -- env DISPLAY=$DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
 RUSTDESK_PID=$!
 
 runuser -u app -- env DISPLAY=$DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
-  chromium --disable-dev-shm-usage --disable-gpu --disable-web-security --user-data-dir="$HOME/Taoli Tools" &
+  chromium --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-web-security --user-data-dir="~/Taoli Tools" &
 CHROMIUM_PID=$!
 
 pids=($XORG_PID $OPENBOX_PID $HBBS_PID $HBBR_PID $RUSTDESK_PID $CHROMIUM_PID)
