@@ -1,0 +1,17 @@
+{
+  "policies": {
+    "Extensions": {
+      "Install": ["file:///opt/taoli-tools/extension.xpi"]
+    },
+    "ExtensionSettings": {
+      "*": { "installation_mode": "blocked" },
+      "cors-relaxer@taoli.tools": { "installation_mode": "allowed" }
+    },
+    "DontCheckDefaultBrowser": true,
+    "DisableAppUpdate": true,
+    "NoDefaultBookmarks": true,
+    "Homepage": { "URL": "https://taoli.tools", "Locked": true },
+    "OverrideFirstRunPage": "",
+    "OverridePostUpdatePage": ""
+  }
+}

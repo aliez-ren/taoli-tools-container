@@ -4,14 +4,15 @@ RUN apk add --no-cache \
   openbox \
   x11vnc \
   xvfb \
-  chromium \
+  firefox \
   python3 \
   py3-pip \
   py3-xdg \
   font-noto \
   font-noto-cjk \
   ca-certificates \
-  novnc
+  novnc \
+  zip
 
 RUN pip3 install --break-system-packages --no-cache-dir websockify
 
@@ -23,6 +24,15 @@ ENV DISPLAY=:1 \
   SCREEN_RESOLUTION=1504x1024x16
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ADD profile/policies.json /usr/lib/firefox/distribution/
+ADD profile/user.js /opt/taoli-tools/
+
+COPY extension /tmp/extension
+RUN cd /tmp/extension \
+  zip -r extension.xpi manifest.json background.js \
+  install -d /opt/taoli-tools \
+  install -m 0644 extension.xpi /opt/taoli-tools/extension.xpi
 
 EXPOSE 80
 
