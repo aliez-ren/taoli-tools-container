@@ -35,7 +35,7 @@ X11VNC_PID=$!
 websockify --web /usr/share/novnc/ 0.0.0.0:"$NOVNC_PORT" 127.0.0.1:"$VNC_PORT" &
 WEBSOCKIFY_PID=$!
 
-firefox --kiosk --profile /opt/taoli-tools "https://taoli.tools" &
+firefox --profile /opt/taoli-tools &
 FIREFOX_PID=$!
 
 wait "$WEBSOCKIFY_PID"

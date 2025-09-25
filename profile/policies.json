@@ -1,7 +1,7 @@
 {
   "policies": {
     "Extensions": {
-      "Install": ["file:///opt/taoli-tools/extension.xpi"]
+      "Install": ["file:///opt/cors-relaxer.xpi"]
     },
     "ExtensionSettings": {
       "*": { "installation_mode": "blocked" },

@@ -11,8 +11,7 @@ RUN apk add --no-cache \
   font-noto \
   font-noto-cjk \
   ca-certificates \
-  novnc \
-  zip
+  novnc
 
 RUN pip3 install --break-system-packages --no-cache-dir websockify
 
@@ -27,12 +26,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ADD profile/policies.json /usr/lib/firefox/distribution/
 ADD profile/user.js /opt/taoli-tools/
-
-COPY extension /tmp/extension
-RUN cd /tmp/extension \
-  zip -r extension.xpi manifest.json background.js \
-  install -d /opt/taoli-tools \
-  install -m 0644 extension.xpi /opt/taoli-tools/extension.xpi
+ADD cors-relaxer.xpi /opt/
 
 EXPOSE 80
 
