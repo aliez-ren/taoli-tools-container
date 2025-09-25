@@ -1,11 +1,10 @@
 // Reflect request Origin and Access-Control-Request-Headers into the response.
 // WARNING: Dev/testing only.
 
-const API = typeof browser !== "undefined" ? browser : chrome;
 const ORIGIN_MAP = new Map(); // requestId -> origin
 const ACRH_MAP = new Map();   // requestId -> access-control-request-headers
 
-API.webRequest.onBeforeSendHeaders.addListener(
+chrome.webRequest.onBeforeSendHeaders.addListener(
   async (details) => {
     let origin = null;
     let acrh = null;
@@ -24,7 +23,7 @@ API.webRequest.onBeforeSendHeaders.addListener(
   ["blocking", "requestHeaders"]
 );
 
-API.webRequest.onHeadersReceived.addListener(
+chrome.webRequest.onHeadersReceived.addListener(
   async (details) => {
     const isPreflight = details.method === "OPTIONS";
     const origin = ORIGIN_MAP.get(details.requestId) || "*";
