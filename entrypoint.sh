@@ -13,6 +13,7 @@ KASMVNC_PASSWORD="${KASMVNC_PASSWORD:-taoli}"
 TARGET_URL="${TARGET_URL:-https://taoli.tools}"
 EXTENSION_DIR="${EXTENSION_DIR:-/home/taoli/extension}"
 PROFILE_DIR="${PROFILE_DIR:-/home/taoli/taoli-tools}"
+export TARGET_URL EXTENSION_DIR PROFILE_DIR
 
 IFS='x' read -r SCREEN_WIDTH SCREEN_HEIGHT SCREEN_DEPTH <<EOF_RES
 $SCREEN_RESOLUTION
@@ -24,14 +25,14 @@ fi
 SCREEN_DEPTH="${SCREEN_DEPTH:-24}"
 
 mkdir -p "$HOME/.vnc"
+touch "$HOME/.Xauthority"
+touch "$HOME/.vnc/.de-was-selected"
 
-printf '%s\n%s\n' "$KASMVNC_PASSWORD" "$KASMVNC_PASSWORD" | kasmvncpasswd -u "$KASMVNC_USER" -w >/dev/null
+if ! printf '%s\n%s\n' "$KASMVNC_PASSWORD" "$KASMVNC_PASSWORD" | kasmvncpasswd -u "$KASMVNC_USER" -w >/dev/null 2>&1; then
+  echo "Warning: failed to provision KasmVNC credentials for $KASMVNC_USER" >&2
+fi
 
-export TAOLI_TARGET_URL="$TARGET_URL"
-export TAOLI_EXTENSION_DIR="$EXTENSION_DIR"
-export TAOLI_PROFILE_DIR="$PROFILE_DIR"
-
-cat > "$HOME/.vnc/xstartup" <<'EOF'
+cat > "$HOME/.vnc/xstartup" <<'EOF_STARTUP'
 #!/bin/sh
 set -eu
 
@@ -44,13 +45,25 @@ chromium \
   --disable-gpu \
   --use-gl=disabled \
   --start-fullscreen \
-  --load-extension="${TAOLI_EXTENSION_DIR}" \
-  --user-data-dir="${TAOLI_PROFILE_DIR}" \
-  "${TAOLI_TARGET_URL}" &
+  --load-extension="${EXTENSION_DIR:-/home/taoli/extension}" \
+  --user-data-dir="${PROFILE_DIR:-/home/taoli/taoli-tools}" \
+  "${TARGET_URL:-https://taoli.tools}" &
 
 wait
-EOF
+EOF_STARTUP
 chmod +x "$HOME/.vnc/xstartup"
+
+cat > "$HOME/.vnc/kasmvnc.yaml" <<EOF_CONFIG
+command_line:
+  prompt: false
+user_session:
+  session_type: shared
+desktop:
+  resolution:
+    width: ${SCREEN_WIDTH}
+    height: ${SCREEN_HEIGHT}
+  pixel_depth: ${SCREEN_DEPTH}
+EOF_CONFIG
 
 DISPLAY_NUMBER="${DISPLAY#:}"
 if [ -z "$DISPLAY_NUMBER" ]; then
@@ -62,4 +75,6 @@ exec kasmvncserver ":$DISPLAY_NUMBER" \
   -depth "$SCREEN_DEPTH" \
   -interface 0.0.0.0 \
   -websocketPort "$KASMVNC_PORT" \
+  -config "$HOME/.vnc/kasmvnc.yaml" \
+  -xstartup "$HOME/.vnc/xstartup" \
   -fg

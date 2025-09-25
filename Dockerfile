@@ -17,6 +17,7 @@ RUN apk add --no-cache \
   perl-try-tiny \
   perl-yaml-tiny \
   perl-switch \
+  perl-hash-merge-simple \
   mcookie \
   setxkbmap \
   xauth \
@@ -24,16 +25,30 @@ RUN apk add --no-cache \
   xkeyboard-config \
   xterm \
   mesa-gbm \
+  mesa-gl \
+  mesa-dri-gallium \
   libwebp \
   libjpeg-turbo \
   libxshmfence \
   libxtst \
   libxfont2 \
+  libx11 \
+  libxau \
+  libxdmcp \
+  libxcb \
+  libxrender \
+  libxfixes \
+  libxdamage \
+  libxcursor \
+  libxi \
+  libxinerama \
+  libxcomposite \
   pixman \
   libgomp \
   libstdc++ \
   libxrandr \
   libpng \
+  libdrm \
   openssl \
   pciutils-libs
 
@@ -50,6 +65,7 @@ RUN set -eux; \
   rm -rf /tmp/kasmvnc /tmp/kasmvnc.apk
 
 RUN addgroup -S taoli && adduser -S -G taoli -h /home/taoli -s /bin/sh taoli
+RUN adduser taoli kasmvnc-cert
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
@@ -71,8 +87,10 @@ RUN set -eux; \
   chown -R taoli:taoli /home/taoli; \
   mkdir -p /home/taoli/taoli-tools; \
   chown -R taoli:taoli /home/taoli/taoli-tools; \
-  for bin in "$(command -v kasmxproxy)"; do \
-  if [ -n "$bin" ] && [ -x "$bin" ]; then \
+  mkdir -p /home/taoli/.vnc; \
+  chown -R taoli:taoli /home/taoli/.vnc; \
+  for bin in /usr/bin/Xkasmvnc /usr/bin/kasmxproxy; do \
+  if [ -x "$bin" ]; then \
   setcap 'cap_net_bind_service=+ep' "$bin"; \
   fi; \
   done
