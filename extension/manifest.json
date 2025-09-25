@@ -1,13 +1,17 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "CORS Relaxer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Loosen CORS for development by reflecting Origin/headers. Do NOT use in production.",
-  "permissions": ["webRequest", "webRequestBlocking", "storage"],
-  "host_permissions": ["https://taoli.tools/"],
-  "background": { "scripts": ["background.js"] },
-  "action": { "default_title": "CORS Relaxer" },
-  "browser_specific_settings": {
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "applications": {
     "gecko": {
       "id": "cors-relaxer@taoli.tools",
       "strict_min_version": "115.0"
