@@ -1,5 +1,0 @@
-#!/bin/sh
-cd extension
-zip -r ../cors-relaxer.xpi manifest.json background.js
-cd ..
-docker build -t taoli-tools-container .
