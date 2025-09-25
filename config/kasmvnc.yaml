@@ -1,0 +1,9 @@
+---
+network:
+  protocol: http
+  ssl:
+    require_ssl: false
+command_line:
+  prompt: false
+user_session:
+  session_type: shared
