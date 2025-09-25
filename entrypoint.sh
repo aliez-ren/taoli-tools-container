@@ -10,10 +10,10 @@ XVFB_PID=""
 OPENBOX_PID=""
 X11VNC_PID=""
 WEBSOCKIFY_PID=""
-FIREFOX_PID=""
+BROWSER_PID=""
 
 cleanup() {
-  for pid in "$FIREFOX_PID" "$WEBSOCKIFY_PID" "$X11VNC_PID" "$OPENBOX_PID" "$XVFB_PID"; do
+  for pid in "$BROWSER_PID" "$WEBSOCKIFY_PID" "$X11VNC_PID" "$OPENBOX_PID" "$XVFB_PID"; do
     if [ -n "$pid" ]; then
       kill "$pid" 2>/dev/null || true
     fi
@@ -35,7 +35,7 @@ X11VNC_PID=$!
 websockify --web /usr/share/novnc/ 0.0.0.0:"$NOVNC_PORT" 127.0.0.1:"$VNC_PORT" &
 WEBSOCKIFY_PID=$!
 
-firefox --profile /opt/taoli-tools &
-FIREFOX_PID=$!
+chromium --display=$DISPLAY --no-sandbox --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --kiosk --disable-web-security --load-extension=/opt/extension --user-data-dir=/opt/taoli-tools "https://taoli.tools" &
+BROWSER_PID=$!
 
 wait "$WEBSOCKIFY_PID"

@@ -9,12 +9,6 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["background.js"]
-  },
-  "applications": {
-    "gecko": {
-      "id": "cors-relaxer@taoli.tools",
-      "strict_min_version": "115.0"
-    }
+    "service_worker": "background.js"
   }
 }

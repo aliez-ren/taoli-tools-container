@@ -4,7 +4,7 @@ RUN apk add --no-cache \
   openbox \
   x11vnc \
   xvfb \
-  firefox \
+  chromium \
   python3 \
   py3-pip \
   py3-xdg \
@@ -24,9 +24,7 @@ ENV DISPLAY=:1 \
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ADD profile/policies.json /usr/lib/firefox/distribution/
-ADD profile/user.js /opt/taoli-tools/
-ADD cors-relaxer.xpi /opt/
+ADD extension /opt/extension
 
 EXPOSE 80
 
