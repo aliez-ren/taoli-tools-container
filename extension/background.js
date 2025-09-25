@@ -1,30 +1,12 @@
 // Reflect request Origin and Access-Control-Request-Headers into the response.
 // WARNING: Dev/testing only.
 
+const API = typeof browser !== "undefined" ? browser : chrome;
 const ORIGIN_MAP = new Map(); // requestId -> origin
 const ACRH_MAP = new Map();   // requestId -> access-control-request-headers
-const ENABLE_KEY = "enabled";
-const SCOPE_KEY = "scopes"; // array of URL match patterns; empty => all
 
-async function getConfig() {
-  const { [ENABLE_KEY]: enabled = true, [SCOPE_KEY]: scopes = [] } =
-    await chrome.storage.local.get([ENABLE_KEY, SCOPE_KEY]);
-  return { enabled, scopes };
-}
-
-function urlMatchesScopes(url, scopes) {
-  if (!scopes || scopes.length === 0) return true; // no scopes => match all
-  return scopes.some(pattern => {
-    try { return new URL(url).href.match(new RegExp(pattern)); }
-    catch { return false; }
-  });
-}
-
-chrome.webRequest.onBeforeSendHeaders.addListener(
+API.webRequest.onBeforeSendHeaders.addListener(
   async (details) => {
-    const { enabled, scopes } = await getConfig();
-    if (!enabled || !urlMatchesScopes(details.url, scopes)) return;
-
     let origin = null;
     let acrh = null;
 
@@ -42,11 +24,8 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   ["blocking", "requestHeaders"]
 );
 
-chrome.webRequest.onHeadersReceived.addListener(
+API.webRequest.onHeadersReceived.addListener(
   async (details) => {
-    const { enabled, scopes } = await getConfig();
-    if (!enabled || !urlMatchesScopes(details.url, scopes)) return;
-
     const isPreflight = details.method === "OPTIONS";
     const origin = ORIGIN_MAP.get(details.requestId) || "*";
     const reqACRH = ACRH_MAP.get(details.requestId) || "";
