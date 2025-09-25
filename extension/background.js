@@ -5,15 +5,12 @@ chrome.webRequest.onHeadersReceived.addListener(
     headers.set("vary", "Origin")
     headers.set("access-control-allow-credentials", "true")
     headers.set("access-control-expose-headers", "*")
-
     if (e.method === "OPTIONS") {
       headers.set("access-control-allow-methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
       headers.set("access-control-allow-headers", "*")
       headers.set("access-control-max-age", "600")
     }
-
     const responseHeaders = Array.from(headers.entries()).map(([name, value]) => ({ name, value }))
-    console.log(responseHeaders)
     return { responseHeaders }
   },
   { urls: ["<all_urls>"] },
