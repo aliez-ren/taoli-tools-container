@@ -38,7 +38,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     // no header mutations required here, but we could add/remove if needed
     return { requestHeaders: details.requestHeaders };
   },
-  { urls: ["taoli.tools"] },
+  { urls: ["<all_urls>"] },
   ["blocking", "requestHeaders"]
 );
 
@@ -87,14 +87,6 @@ chrome.webRequest.onHeadersReceived.addListener(
 
     return { responseHeaders: newHeaders };
   },
-  { urls: ["taoli.tools"] },
+  { urls: ["<all_urls>"] },
   ["blocking", "responseHeaders"]
 );
-
-// Optional: simple toggle via action click
-chrome.action.onClicked.addListener(async () => {
-  const { enabled } = await getConfig();
-  await chrome.storage.local.set({ [ENABLE_KEY]: !enabled });
-  chrome.action.setBadgeText({ text: !enabled ? "ON" : "OFF" });
-  chrome.action.setBadgeBackgroundColor({ color: !enabled ? "#2e7d32" : "#b71c1c" });
-});

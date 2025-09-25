@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Loosen CORS for development by reflecting Origin/headers. Do NOT use in production.",
   "permissions": ["webRequest", "webRequestBlocking", "storage"],
-  "host_permissions": ["taoli.tools"],
+  "host_permissions": ["https://taoli.tools/"],
   "background": { "scripts": ["background.js"] },
   "action": { "default_title": "CORS Relaxer" },
   "browser_specific_settings": {
