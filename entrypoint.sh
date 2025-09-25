@@ -2,64 +2,40 @@
 set -eu
 
 export DISPLAY="${DISPLAY:-:1}"
+NOVNC_PORT="${NOVNC_PORT:-80}"
+VNC_PORT="${VNC_PORT:-5900}"
 SCREEN_RESOLUTION="${SCREEN_RESOLUTION:-1504x1024x16}"
-KASMVNC_PORT="${KASMVNC_PORT:-}"
-if [ -z "$KASMVNC_PORT" ] && [ -n "${NOVNC_PORT:-}" ]; then
-  KASMVNC_PORT="$NOVNC_PORT"
-fi
-KASMVNC_PORT="${KASMVNC_PORT:-80}"
-KASMVNC_USER="${KASMVNC_USER:-taoli}"
-KASMVNC_PASSWORD="${KASMVNC_PASSWORD:-taoli}"
-TARGET_URL="${TARGET_URL:-https://taoli.tools}"
-EXTENSION_DIR="${EXTENSION_DIR:-/home/taoli/extension}"
-PROFILE_DIR="${PROFILE_DIR:-/home/taoli/taoli-tools}"
 
-IFS='x' read -r SCREEN_WIDTH SCREEN_HEIGHT SCREEN_DEPTH <<EOF_RES
-$SCREEN_RESOLUTION
-EOF_RES
-if [ -z "${SCREEN_WIDTH:-}" ] || [ -z "${SCREEN_HEIGHT:-}" ]; then
-  echo "Invalid SCREEN_RESOLUTION: $SCREEN_RESOLUTION" >&2
-  exit 1
-fi
-SCREEN_DEPTH="${SCREEN_DEPTH:-24}"
+XVFB_PID=""
+OPENBOX_PID=""
+X11VNC_PID=""
+WEBSOCKIFY_PID=""
+BROWSER_PID=""
 
-mkdir -p "$HOME/.vnc"
+cleanup() {
+  for pid in "$BROWSER_PID" "$WEBSOCKIFY_PID" "$X11VNC_PID" "$OPENBOX_PID" "$XVFB_PID"; do
+    if [ -n "$pid" ]; then
+      kill "$pid" 2>/dev/null || true
+    fi
+  done
+}
+trap cleanup INT TERM
 
-printf '%s\n%s\n' "$KASMVNC_PASSWORD" "$KASMVNC_PASSWORD" | kasmvncpasswd -u "$KASMVNC_USER" -w >/dev/null
+Xvfb "$DISPLAY" -screen 0 "$SCREEN_RESOLUTION" &
+XVFB_PID=$!
 
-export TAOLI_TARGET_URL="$TARGET_URL"
-export TAOLI_EXTENSION_DIR="$EXTENSION_DIR"
-export TAOLI_PROFILE_DIR="$PROFILE_DIR"
-
-cat > "$HOME/.vnc/xstartup" <<'EOF'
-#!/bin/sh
-set -eu
+sleep 2
 
 openbox-session &
+OPENBOX_PID=$!
 
-chromium \
-  --display="${DISPLAY}" \
-  --no-default-browser-check \
-  --no-first-run \
-  --disable-gpu \
-  --use-gl=disabled \
-  --start-fullscreen \
-  --load-extension="${TAOLI_EXTENSION_DIR}" \
-  --user-data-dir="${TAOLI_PROFILE_DIR}" \
-  "${TAOLI_TARGET_URL}" &
+x11vnc -display "$DISPLAY" -forever -shared -nopw -repeat -xkb -rfbport "$VNC_PORT" -listen 0.0.0.0 &
+X11VNC_PID=$!
 
-wait
-EOF
-chmod +x "$HOME/.vnc/xstartup"
+websockify --web /usr/share/novnc/ 0.0.0.0:"$NOVNC_PORT" 127.0.0.1:"$VNC_PORT" &
+WEBSOCKIFY_PID=$!
 
-DISPLAY_NUMBER="${DISPLAY#:}"
-if [ -z "$DISPLAY_NUMBER" ]; then
-  DISPLAY_NUMBER=1
-fi
+chromium --display=$DISPLAY --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --start-fullscreen --load-extension=/home/taoli/extension --user-data-dir=/home/taoli/taoli-tools "https://taoli.tools" &
+BROWSER_PID=$!
 
-exec kasmvncserver ":$DISPLAY_NUMBER" \
-  -geometry "${SCREEN_WIDTH}x${SCREEN_HEIGHT}" \
-  -depth "$SCREEN_DEPTH" \
-  -interface 0.0.0.0 \
-  -websocketPort "$KASMVNC_PORT" \
-  -fg
+wait "$WEBSOCKIFY_PID"
