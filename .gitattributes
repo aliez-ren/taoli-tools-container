@@ -1,0 +1,1 @@
+cors-relaxer.xpi filter=lfs diff=lfs merge=lfs -text
