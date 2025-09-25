@@ -1,70 +1,21 @@
-// Reflect request Origin and Access-Control-Request-Headers into the response.
-// WARNING: Dev/testing only.
-
-const ORIGIN_MAP = new Map(); // requestId -> origin
-const ACRH_MAP = new Map();   // requestId -> access-control-request-headers
-
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  async (details) => {
-    let origin = null;
-    let acrh = null;
-
-    for (const h of details.requestHeaders || []) {
-      if (h.name.toLowerCase() === "origin") origin = h.value;
-      if (h.name.toLowerCase() === "access-control-request-headers") acrh = h.value;
-    }
-    if (origin) ORIGIN_MAP.set(details.requestId, origin);
-    if (acrh) ACRH_MAP.set(details.requestId, acrh);
-
-    // no header mutations required here, but we could add/remove if needed
-    return { requestHeaders: details.requestHeaders };
-  },
-  { urls: ["<all_urls>"] },
-  ["blocking", "requestHeaders"]
-);
-
 chrome.webRequest.onHeadersReceived.addListener(
-  async (details) => {
-    const isPreflight = details.method === "OPTIONS";
-    const origin = ORIGIN_MAP.get(details.requestId) || "*";
-    const reqACRH = ACRH_MAP.get(details.requestId) || "";
+  (e) => {
+    const headers = new Map(e.responseHeaders.map(({ name, value }) => [name.toLowerCase(), value]))
+    headers.set("access-control-allow-origin", "*")
+    headers.set("vary", "Origin")
+    headers.set("access-control-allow-credentials", "true")
+    headers.set("access-control-expose-headers", "*")
 
-    // Build new response headers map (case-insensitive replace)
-    const newHeaders = [];
-    const lower = new Map();
-    for (const h of details.responseHeaders || []) {
-      const key = h.name.toLowerCase();
-      if (!lower.has(key)) lower.set(key, []);
-      lower.get(key).push(h);
-    }
-    function setHeader(name, value) {
-      const key = name.toLowerCase();
-      lower.set(key, [{ name, value }]);
+    if (e.method === "OPTIONS") {
+      headers.set("access-control-allow-methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
+      headers.set("access-control-allow-headers", "*")
+      headers.set("access-control-max-age", "600")
     }
 
-    // CORS relaxation
-    // If you need credentials (cookies) with CORS, "*" is invalid for ACAO; reflect exact Origin instead.
-    const allowOrigin = origin === "null" ? "*" : origin;
-    setHeader("Access-Control-Allow-Origin", allowOrigin);
-    setHeader("Vary", "Origin"); // keep caches sane
-    setHeader("Access-Control-Allow-Credentials", "true");
-    setHeader("Access-Control-Expose-Headers", "*");
-
-    if (isPreflight) {
-      setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD");
-      setHeader("Access-Control-Allow-Headers", reqACRH || "*");
-      setHeader("Access-Control-Max-Age", "600");
-    }
-
-    // Reconstruct list
-    for (const [_, arr] of lower) newHeaders.push(...arr);
-
-    // cleanup maps to avoid leaks
-    ORIGIN_MAP.delete(details.requestId);
-    ACRH_MAP.delete(details.requestId);
-
-    return { responseHeaders: newHeaders };
+    const responseHeaders = Array.from(headers.entries()).map(([name, value]) => ({ name, value }))
+    console.log(responseHeaders)
+    return { responseHeaders }
   },
   { urls: ["<all_urls>"] },
-  ["blocking", "responseHeaders"]
-);
+  ["blocking", "responseHeaders", "extraHeaders"]
+)
