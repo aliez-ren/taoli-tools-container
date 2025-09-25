@@ -11,9 +11,12 @@ RUN apk add --no-cache \
   font-noto \
   font-noto-cjk \
   ca-certificates \
-  novnc
+  novnc \
+  libcap
 
 RUN pip3 install --break-system-packages --no-cache-dir websockify
+
+RUN addgroup -S taoli && adduser -S -G taoli -h /home/taoli -s /bin/sh taoli
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
@@ -24,8 +27,18 @@ ENV DISPLAY=:1 \
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ADD extension /opt/extension
+ADD --chown=taoli:taoli extension /home/taoli/extension
+
+RUN set -eux; \
+  mkdir -p /home/taoli; \
+  chown -R taoli:taoli /home/taoli; \
+  mkdir -p /home/taoli/taoli-tools; \
+  chown -R taoli:taoli /home/taoli/taoli-tools; \
+  PYTHON_BIN="$(python3 -c 'import os, sys; print(os.path.realpath(sys.executable))')"; \
+  setcap 'cap_net_bind_service=+ep' "$PYTHON_BIN"
 
 EXPOSE 80
+
+USER taoli
 
 CMD ["/usr/local/bin/entrypoint.sh"]
