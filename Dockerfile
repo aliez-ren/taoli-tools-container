@@ -10,9 +10,14 @@ RUN apk add --no-cache \
   ca-certificates \
   openssl \
   novnc \
-  tailscale
+  tailscale \
+  tzdata \
+  font-noto-cjk \
+  font-noto
 
 RUN pip3 install --break-system-packages --no-cache-dir websockify
+
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 RUN addgroup -S taoli && adduser -S -G taoli -h /home/taoli -s /bin/sh taoli
 
