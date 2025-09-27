@@ -1,7 +1,7 @@
 FROM alpine:3.22.1
 
 RUN apk add --no-cache \
-  fluxbox \
+  openbox \
   tigervnc \
   chromium \
   python3 \

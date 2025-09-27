@@ -3,13 +3,13 @@ set -eu
 
 VNC_PID=""
 WEBSOCKIFY_PID=""
-FLUXBOX_PID=""
+OPENBOX_PID=""
 BROWSER_PID=""
 TAILSCALED_PID=""
 TAILSCALE_PID=""
 
 cleanup() {
-  for pid in "$TAILSCALE_PID" "$TAILSCALED_PID" "$BROWSER_PID" "$FLUXBOX_PID" "$WEBSOCKIFY_PID" "$VNC_PID"; do
+  for pid in "$TAILSCALE_PID" "$TAILSCALED_PID" "$BROWSER_PID" "$OPENBOX_PID" "$WEBSOCKIFY_PID" "$VNC_PID"; do
     if [ -n "$pid" ]; then
       kill "$pid" 2>/dev/null || true
     fi
@@ -25,8 +25,8 @@ openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -subj /CN=local
 websockify --web /usr/share/novnc/ --cert CERT.pem --key KEY.pem 127.0.0.1:"$NOVNC_PORT" 127.0.0.1:"$VNC_PORT" &
 WEBSOCKIFY_PID=$!
 
-fluxbox &
-FLUXBOX_PID=$!
+openbox-session &
+OPENBOX_PID=$!
 
 rm -rf $HOME/data/SingletonLock
 chromium --display=$DISPLAY --enable-features=WebContentsForceDark --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --kiosk --load-extension=/home/taoli/extension --user-data-dir=$HOME/data "https://taoli.tools" &
