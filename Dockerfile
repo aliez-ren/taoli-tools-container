@@ -1,9 +1,7 @@
 FROM alpine:3.22.1
 
 RUN apk add --no-cache \
-  openbox \
-  x11vnc \
-  xvfb \
+  tigervnc \
   chromium \
   python3 \
   py3-pip \
@@ -28,7 +26,7 @@ ADD index.html /usr/share/novnc/
 ENV DISPLAY=:1 \
   NOVNC_PORT=443 \
   VNC_PORT=5900 \
-  SCREEN_RESOLUTION=1504x1024x16
+  SCREEN_RESOLUTION=1504x1024
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
