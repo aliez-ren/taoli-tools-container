@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3.22.1
 
 RUN apk add --no-cache \
   openbox \
@@ -11,6 +11,7 @@ RUN apk add --no-cache \
   font-noto \
   font-noto-cjk \
   ca-certificates \
+  openssl \
   novnc \
   libcap \
   tailscale
@@ -25,7 +26,7 @@ ADD favicon.ico /usr/share/novnc/
 ADD index.html /usr/share/novnc/
 
 ENV DISPLAY=:1 \
-  NOVNC_PORT=80 \
+  NOVNC_PORT=443 \
   VNC_PORT=5900 \
   SCREEN_RESOLUTION=1504x1024x16
 

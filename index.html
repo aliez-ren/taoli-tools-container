@@ -33,7 +33,7 @@
     import RFB from './core/rfb.js'
     import KeyTable from './core/input/keysym.js'
 
-    const rfb = new RFB(document.querySelector('#noVNC_container'), `ws://${window.location.hostname}`)
+    const rfb = new RFB(document.querySelector('#noVNC_container'), `wss://${window.location.hostname}`)
 
     function isPasteKeydownEvent(e) {
       return e.keyCode === 86 && (e.ctrlKey || e.metaKey)
