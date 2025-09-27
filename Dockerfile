@@ -37,8 +37,8 @@ ADD --chown=taoli:taoli extension /home/taoli/extension
 RUN set -eux; \
   mkdir -p /home/taoli; \
   chown -R taoli:taoli /home/taoli; \
-  mkdir -p /home/taoli/taoli-tools; \
-  chown -R taoli:taoli /home/taoli/taoli-tools; \
+  mkdir -p /home/taoli/data; \
+  chown -R taoli:taoli /home/taoli/data; \
   PYTHON_BIN="$(python3 -c 'import os, sys; print(os.path.realpath(sys.executable))')"; \
   setcap 'cap_net_bind_service=+ep' "$PYTHON_BIN"
 
