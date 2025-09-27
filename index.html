@@ -34,6 +34,7 @@
     import KeyTable from './core/input/keysym.js'
 
     const rfb = new RFB(document.querySelector('#noVNC_container'), `wss://${window.location.hostname}`)
+    rfb.resizeSession = true
 
     function isPasteKeydownEvent(e) {
       return e.keyCode === 86 && (e.ctrlKey || e.metaKey)
