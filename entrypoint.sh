@@ -31,7 +31,7 @@ X11VNC_PID=$!
 
 cd $HOME
 openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -subj /CN=localhost -addext 'subjectAltName=DNS:localhost,IP:127.0.0.1' -out CERT.pem -keyout KEY.pem
-websockify --web /usr/share/novnc/ --cert CERT.pem --key KEY.pem 0.0.0.0:"$NOVNC_PORT" 127.0.0.1:"$VNC_PORT" &
+websockify --web /usr/share/novnc/ --cert CERT.pem --key KEY.pem 127.0.0.1:"$NOVNC_PORT" 127.0.0.1:"$VNC_PORT" &
 WEBSOCKIFY_PID=$!
 
 chromium --display=$DISPLAY --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --kiosk --load-extension=/home/taoli/extension --user-data-dir=$HOME/data "https://taoli.tools" &
