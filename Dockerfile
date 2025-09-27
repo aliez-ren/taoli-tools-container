@@ -12,7 +12,8 @@ RUN apk add --no-cache \
   font-noto-cjk \
   ca-certificates \
   novnc \
-  libcap
+  libcap \
+  tailscale
 
 RUN pip3 install --break-system-packages --no-cache-dir websockify
 
@@ -39,8 +40,6 @@ RUN set -eux; \
   chown -R taoli:taoli /home/taoli/taoli-tools; \
   PYTHON_BIN="$(python3 -c 'import os, sys; print(os.path.realpath(sys.executable))')"; \
   setcap 'cap_net_bind_service=+ep' "$PYTHON_BIN"
-
-EXPOSE 80
 
 USER taoli
 
