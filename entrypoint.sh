@@ -28,7 +28,7 @@ WEBSOCKIFY_PID=$!
 fluxbox &
 FLUXBOX_PID=$!
 
-rm $HOME/data/SingletonLock
+rm -rf $HOME/data/SingletonLock
 chromium --display=$DISPLAY --enable-features=WebContentsForceDark --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --kiosk --load-extension=/home/taoli/extension --user-data-dir=$HOME/data "https://taoli.tools" &
 BROWSER_PID=$!
 

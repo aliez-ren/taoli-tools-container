@@ -7,12 +7,9 @@ RUN apk add --no-cache \
   python3 \
   py3-pip \
   py3-xdg \
-  font-noto \
-  font-noto-cjk \
   ca-certificates \
   openssl \
   novnc \
-  libcap \
   tailscale
 
 RUN pip3 install --break-system-packages --no-cache-dir websockify
@@ -36,9 +33,7 @@ RUN set -eux; \
   mkdir -p /home/taoli; \
   chown -R taoli:taoli /home/taoli; \
   mkdir -p /home/taoli/data; \
-  chown -R taoli:taoli /home/taoli/data; \
-  PYTHON_BIN="$(python3 -c 'import os, sys; print(os.path.realpath(sys.executable))')"; \
-  setcap 'cap_net_bind_service=+ep' "$PYTHON_BIN"
+  chown -R taoli:taoli /home/taoli/data;
 
 USER taoli
 
