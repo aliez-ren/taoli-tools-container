@@ -33,6 +33,8 @@
 
     const rfb = new RFB(document.querySelector('#noVNC_container'), `wss://${window.location.hostname}`)
     rfb.resizeSession = true
+    rfb.qualityLevel = 0
+    rfb.compressionLevel = 9
 
     function isPasteKeydownEvent(e) {
       return e.keyCode === 86 && (e.ctrlKey || e.metaKey)
