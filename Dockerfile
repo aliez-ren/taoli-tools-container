@@ -20,6 +20,7 @@ RUN addgroup -S taoli && adduser -S -G taoli -h /home/taoli -s /bin/sh taoli
 
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
 
+ADD favicon.ico /usr/share/novnc/
 ADD index.html /usr/share/novnc/
 
 ENV DISPLAY=:1 \
