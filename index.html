@@ -53,8 +53,8 @@
     }
 
     async function pasteText(text) {
-      rfb.sendKey(0, 'ControlLeft', false);
-      rfb.sendKey(0, 'MetaLeft', false);
+      rfb.sendKey(0, 'ControlLeft', false)
+      rfb.sendKey(0, 'MetaLeft', false)
       await new Promise(resolve => setTimeout(resolve, 500))
       for (const character of text) {
         const code = character.charCodeAt()
@@ -80,6 +80,10 @@
 
     rfb.addEventListener('connect', (e) => {
       document.querySelector('#noVNC_container').addEventListener('keydown', pasteKeyDownListener, true)
+    })
+
+    rfb.addEventListener('clipboard', (e) => {
+      window.navigator.clipboard.writeText(e.detail.text)
     })
   </script>
 </body>
