@@ -18,7 +18,9 @@ RUN pip3 install --break-system-packages --no-cache-dir websockify
 
 RUN addgroup -S taoli && adduser -S -G taoli -h /home/taoli -s /bin/sh taoli
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+ADD entrypoint.sh /usr/local/bin/entrypoint.sh
+
+ADD index.html /usr/share/novnc/
 
 ENV DISPLAY=:1 \
   NOVNC_PORT=80 \
