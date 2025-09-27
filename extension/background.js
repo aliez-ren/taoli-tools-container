@@ -1,3 +1,31 @@
+const urls = [
+  'https://www.gate.io/*',
+  'https://www.gate.com/*',
+  'https://api.gateio.ws/*',
+  'https://www.bitget.com/*',
+  'https://www.binance.com/*',
+  'https://api.backpack.exchange/*',
+  'https://omni.apex.exchange/*',
+  'https://api.coinbase.com/*',
+  'https://api.international.coinbase.com/*',
+  'https://fapi.asterdex.com/*',
+  'https://api2.bybit.com/*',
+  'https://api.mexc.com/*',
+  'https://contract.mexc.com/*',
+]
+
+chrome.webRequest.onBeforeSendHeaders.addListener(
+	(details) => {
+		return {
+			requestHeaders: details.requestHeaders.filter(
+				({ name }) => name.toLowerCase() !== "origin",
+			),
+		}
+	},
+	{ urls },
+	["blocking", "requestHeaders", "extraHeaders"],
+)
+
 chrome.webRequest.onHeadersReceived.addListener(
   (e) => {
     const headers = new Map(e.responseHeaders.map(({ name, value }) => [name.toLowerCase(), value]))
@@ -13,22 +41,6 @@ chrome.webRequest.onHeadersReceived.addListener(
     const responseHeaders = Array.from(headers.entries()).map(([name, value]) => ({ name, value }))
     return { responseHeaders }
   },
-  { 
-    urls: [
-      'https://www.gate.io/*',
-      'https://www.gate.com/*',
-      'https://api.gateio.ws/*',
-      'https://www.bitget.com/*',
-      'https://www.binance.com/*',
-      'https://api.backpack.exchange/*',
-      'https://omni.apex.exchange/*',
-      'https://api.coinbase.com/*',
-      'https://api.international.coinbase.com/*',
-      'https://fapi.asterdex.com/*',
-      'https://api2.bybit.com/*',
-      'https://api.mexc.com/*',
-      'https://contract.mexc.com/*',
-    ],
-  },
+  { urls },
   ["blocking", "responseHeaders", "extraHeaders"]
 )
