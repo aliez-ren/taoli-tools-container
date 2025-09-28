@@ -1,9 +1,25 @@
 #!/bin/sh
 
 curl -fsSL https://get.docker.com | sh
-curl -fsSL https://github.com/aliez-ren/taoli-tools-container/raw/refs/heads/main/chromium.json -o chromium.json
-docker rm -f taoli-tools-container
-docker volume create taoli-tools-data
-docker volume create tailscale-state
-docker run --name=taoli-tools-container --security-opt seccomp=chromium.json -v taoli-tools-data:/home/taoli/data -v tailscale-state:/var/lib/tailscale -d --restart=always ghcr.io/aliez-ren/taoli-tools-container:latest
-docker logs -f --tail 100 taoli-tools-container
+
+mkdir -p /etc/docker/seccomp/
+echo "{\"seccomp-profile\": \"/etc/docker/seccomp/chromium.json\"}" > /etc/docker/daemon.json
+curl -fsSL https://github.com/aliez-ren/taoli-tools-container/raw/refs/heads/main/chromium.json -o /etc/docker/seccomp/chromium.json
+
+curl -fsSL https://github.com/aliez-ren/taoli-tools-container/raw/refs/heads/main/compose.yml -o compose.yml
+
+openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -subj /CN=taoli-tools-signer -addext 'subjectAltName=DNS:taoli-tools-signer' -out CERT.pem -keyout KEY.pem
+
+if [ ! -f keychain.toml ]; then
+  echo " " > keychain.toml
+fi
+
+docker stack deploy -c compose.yml -d taoli
+
+rm keychain.toml
+
+rm KEY.pem
+
+mv CERT.pem /mnt/
+
+docker service logs -f taoli_taoli-tools-container
