@@ -4,12 +4,12 @@ set -eu
 VNC_PID=""
 WEBSOCKIFY_PID=""
 OPENBOX_PID=""
+BROWSER_PID=""
 TAILSCALED_PID=""
 TAILSCALE_PID=""
-BROWSER_PID=""
 
 cleanup() {
-  for pid in "$VNC_PID" "$WEBSOCKIFY_PID" "$OPENBOX_PID" "$TAILSCALED_PID" "$TAILSCALE_PID" "$BROWSER_PID"; do
+  for pid in "$VNC_PID" "$WEBSOCKIFY_PID" "$OPENBOX_PID" "$BROWSER_PID" "$TAILSCALED_PID" "$TAILSCALE_PID"; do
     if [ -n "$pid" ]; then
       kill "$pid" 2>/dev/null || true
     fi
@@ -28,14 +28,16 @@ WEBSOCKIFY_PID=$!
 openbox-session &
 OPENBOX_PID=$!
 
-tailscaled --tun=userspace-networking --socket=$HOME/tailscale.socket &
-TAILSCALED_PID=$!
-
-tailscale --socket=$HOME/tailscale.socket up --hostname=taoli-tools-container --qr &
-TAILSCALE_PID=$!
-
 rm -f $HOME/data/SingletonLock
 chromium --display=$DISPLAY --enable-features=WebContentsForceDark --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --disable-dev-shm-usage --start-fullscreen --load-extension=$HOME/extension --user-data-dir=$HOME/data https://taoli.tools &
 BROWSER_PID=$!
+
+tailscaled --tun=userspace-networking --socket=$HOME/tailscale.socket &
+TAILSCALED_PID=$!
+
+sleep 5
+
+tailscale --socket=$HOME/tailscale.socket up --hostname=taoli-tools-container --qr &
+TAILSCALE_PID=$!
 
 wait $BROWSER_PID
