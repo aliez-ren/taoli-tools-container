@@ -34,8 +34,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ADD --chown=taoli:taoli extension /home/taoli/extension
 
-RUN set -eux; \
-  mkdir -p /home/taoli; \
+RUN mkdir -p /home/taoli; \
   chown -R taoli:taoli /home/taoli; \
   mkdir -p /home/taoli/data; \
   chown -R taoli:taoli /home/taoli/data;
