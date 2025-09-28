@@ -34,7 +34,7 @@ TAILSCALED_PID=$!
 tailscale --socket=$HOME/tailscale.socket up --hostname=taoli-tools-container --qr &
 TAILSCALE_PID=$!
 
-rm -rf $HOME/data/SingletonLock
+rm -f $HOME/data/SingletonLock
 chromium --display=$DISPLAY --enable-features=WebContentsForceDark --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --disable-dev-shm-usage --start-fullscreen --load-extension=$HOME/extension --user-data-dir=$HOME/data https://taoli.tools &
 BROWSER_PID=$!
 

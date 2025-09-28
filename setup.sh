@@ -20,9 +20,7 @@ docker swarm init
 
 docker stack deploy -c compose.yml -d taoli_tools
 
-rm keychain.toml
-
-rm KEY.pem
+rm -f keychain.toml KEY.pem
 
 mv CERT.pem /mnt/
 
