@@ -85,7 +85,9 @@
     })
 
     rfb.addEventListener('clipboard', (e) => {
-      window.navigator.clipboard.writeText(e.detail.text)
+      try {
+        window.navigator.clipboard.writeText(e.detail.text)
+      } catch { }
     })
   </script>
 </body>
