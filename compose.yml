@@ -1,11 +1,11 @@
 version: "3.9"
 
 services:
-  taoli-tools-container:
+  container:
     image: ghcr.io/aliez-ren/taoli-tools-container:latest
     volumes:
-      - taoli-tools-data:/home/taoli/data
-      - tailscale-state:/var/lib/tailscale
+      - data:/home/taoli/data
+      - tailscale:/var/lib/tailscale
       - /mnt:/home/taoli/cert
     networks:
       - public
@@ -24,7 +24,7 @@ services:
       rollback_config:
         order: stop-first
 
-  taoli-tools-signer:
+  signer:
     image: ghcr.io/aliez-ren/taoli-tools-signer:latest
     secrets:
       - KEYCHAIN
@@ -56,9 +56,9 @@ networks:
     internal: true
 
 volumes:
-  taoli-tools-data:
+  data:
     driver: local
-  tailscale-state:
+  tailscale:
     driver: local
 
 secrets:
