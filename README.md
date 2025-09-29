@@ -13,3 +13,8 @@ docker service update --force taoli_tools_container
 ```bash
 docker service update --force taoli_tools_signer
 ```
+
+## Remove
+```bash
+docker service rm taoli_tools
+```
