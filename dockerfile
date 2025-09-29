@@ -32,8 +32,6 @@ ENV DISPLAY=:1 \
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ADD --chown=taoli:taoli extension /home/taoli/extension
-
 RUN mkdir -p /home/taoli; \
   chown -R taoli:taoli /home/taoli; \
   mkdir -p /home/taoli/data; \
