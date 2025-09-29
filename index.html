@@ -48,7 +48,9 @@
         e.stopPropagation()
         navigator.clipboard.readText().then((text) => {
           if (rfb._rfbConnectionState === 'connected') {
-            pasteText(text)
+            try {
+              pasteText(text)
+            } catch {}
           }
         })
       }
