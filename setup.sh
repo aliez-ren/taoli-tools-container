@@ -1,10 +1,10 @@
 #!/bin/sh
 
-mkdir -p /etc/docker/seccomp/
+mkdir -p /etc/docker
 
-echo "{\"seccomp-profile\": \"/etc/docker/seccomp/chromium.json\"}" > /etc/docker/daemon.json
+echo "{\"seccomp-profile\": \"/etc/docker/chromium-seccomp.json\"}" > /etc/docker/daemon.json
 
-curl -fsSL https://github.com/aliez-ren/taoli-tools-container/raw/refs/heads/main/chromium.json > /etc/docker/seccomp/chromium.json
+curl -fsSL https://github.com/aliez-ren/taoli-tools-container/raw/refs/heads/main/chromium.json > /etc/docker/chromium-seccomp.json
 
 curl -fsSL https://get.docker.com | sh
 
@@ -17,6 +17,10 @@ if [ ! -f keychain.toml ]; then
 fi
 
 docker swarm init
+
+docker pull ghcr.io/aliez-ren/taoli-tools-container:latest
+
+docker pull ghcr.io/aliez-ren/taoli-tools-signer:latest
 
 docker stack deploy -c compose.yml -d taoli_tools
 
