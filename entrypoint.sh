@@ -29,7 +29,7 @@ openbox-session &
 OPENBOX_PID=$!
 
 rm -f $HOME/data/SingletonLock
-chromium --display=$DISPLAY --enable-features=WebContentsForceDark --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --disable-dev-shm-usage --start-fullscreen --load-extension=$HOME/extension --user-data-dir=$HOME/data https://taoli.tools &
+chromium --display=$DISPLAY --enable-features=WebContentsForceDark --no-default-browser-check --no-first-run --disable-gpu --use-gl=disabled --disable-dev-shm-usage --kiosk --ignore-certificate-errors --load-extension=$HOME/extension --user-data-dir=$HOME/data https://taoli.tools &
 BROWSER_PID=$!
 
 tailscaled --tun=userspace-networking --socket=$HOME/tailscale.socket &
