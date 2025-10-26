@@ -35,7 +35,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 RUN mkdir -p /home/taoli; \
   chown -R taoli:taoli /home/taoli; \
   mkdir -p /home/taoli/data; \
-  chown -R taoli:taoli /home/taoli/data;
+  chown -R taoli:taoli /home/taoli/data; \
+  mkdir -p /home/taoli/.local/share/tailscale; \
+  chown -R taoli:taoli /home/taoli/.local/share/tailscale;
 
 USER taoli
 
