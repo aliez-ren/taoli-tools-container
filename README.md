@@ -20,5 +20,5 @@ docker service logs -f taoli_tools_signer
 
 ## Remove
 ```bash
-docker service rm taoli_tools
+docker service rm taoli_tools_container taoli_tools_signer
 ```
