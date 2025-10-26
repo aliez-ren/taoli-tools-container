@@ -21,4 +21,5 @@ docker service logs -f taoli_tools_signer
 ## Remove
 ```bash
 docker service rm taoli_tools_container taoli_tools_signer
+docker secret rm taoli_tools_CERT.pem taoli_tools_KEY.pem taoli_tools_KEYCHAIN
 ```
