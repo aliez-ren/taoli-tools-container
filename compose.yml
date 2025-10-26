@@ -5,7 +5,7 @@ services:
     image: ghcr.io/aliez-ren/taoli-tools-container:latest
     volumes:
       - data:/home/taoli/data
-      - tailscale:/var/lib/tailscale
+      - tailscale:/home/taoli/.local/share/tailscale/
       - /mnt:/home/taoli/cert
     networks:
       - public
