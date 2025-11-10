@@ -2,9 +2,9 @@
 
 mkdir -p /etc/docker
 
-echo "{\"seccomp-profile\": \"/etc/docker/chromium-seccomp.json\"}" > /etc/docker/daemon.json
+echo "{\"seccomp-profile\": \"/etc/docker/seccomp.json\"}" > /etc/docker/daemon.json
 
-curl -fsSL https://github.com/aliez-ren/taoli-tools-container/raw/refs/heads/main/chromium.json > /etc/docker/chromium-seccomp.json
+curl -fsSL https://github.com/aliez-ren/taoli-tools-container/raw/refs/heads/main/seccomp.json > /etc/docker/seccomp.json
 
 curl -fsSL https://get.docker.com | sh
 
