@@ -37,6 +37,7 @@ TAILSCALED_PID=$!
 
 sleep 5
 
+tailscale set --advertise-exit-node
 tailscale --socket=$HOME/tailscale.socket up --hostname=taoli-tools-container --qr &
 TAILSCALE_PID=$!
 
